@@ -2,7 +2,6 @@ import argparse
 import torch
 
 import utils
-import data
 import params as P
 import config as C
 
@@ -77,30 +76,6 @@ def load_models(config, iter_id, testing=True):
 	net.to(P.DEVICE)
 	return pre_net, net
 
-# Test network specified in the configuration against the CIFAR10 test set
-def run_eval_iter(config, iter_id):
-	# Prepare network model to be tested
-	print("Loading network models for testing...")
-	pre_net, net = load_models(config, iter_id, testing=True)
-	print("Model loading completed!")
-	
-	# Load test dataset
-	print("Preparing dataset manager...")
-	dataManager = data.DataManager(config)
-	print("Dataset manager ready!")
-	print("Preparing test dataset...")
-	test_set = dataManager.get_test()
-	print("Test dataset ready!")
-	
-	print("Testing...")
-	test_acc = eval_pass(net, test_set, config, pre_net)
-	print("Accuracy of the network on the test images: {:.2f}%".format(100 * test_acc))
-	
-	print("Saving test result...")
-	utils.update_csv(str(iter_id), test_acc, config.CSV_PATH)
-	print("Saved!")
-
-
 def launch_experiment(run_iter_fn):
 	parser = argparse.ArgumentParser()
 	parser.add_argument('--config', default=P.DEFAULT_CONFIG, choices=C.CONFIGURATIONS.keys(), help='The experiment configuration you want to run.')
@@ -112,6 +87,3 @@ def launch_experiment(run_iter_fn):
 		print("\n********    Starting Iteration " + str(iter_id) + "    ********\n")
 		run_iter_fn(config, iter_id)
 	print("\nFinished!")
-
-if __name__ == '__main__':
-	launch_experiment(run_eval_iter)

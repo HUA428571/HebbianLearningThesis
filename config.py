@@ -1,12 +1,6 @@
 import params as P
-import basemodel.model, basemodel.model_no_bias, basemodel.model_bn_before_relu, \
-	basemodel.model1, basemodel.model1_no_bias, basemodel.model2, basemodel.model3, basemodel.model4, \
-	basemodel.top1, basemodel.top2, basemodel.top3, basemodel.top4, basemodel.fc, basemodel.fc_no_bias, \
-	basemodel.triplefc
-import hebbmodel.model, hebbmodel.model1, hebbmodel.model1_som, \
-	hebbmodel.top1, hebbmodel.top2, hebbmodel.top3, hebbmodel.top4, hebbmodel.fc, \
-	hebbmodel.top4_bw, hebbmodel.triplefc, hebbmodel.triplefc_bw, \
-	hebbmodel.g1h2_6, hebbmodel.g1_2h3_6, hebbmodel.g1_3h4_6, hebbmodel.g1_4h5_6
+import basemodel.model,	basemodel.top1, basemodel.top2, basemodel.top3, basemodel.top4, basemodel.fc
+import hebbmodel.model
 
 
 class Configuration:
@@ -75,13 +69,11 @@ class Configuration:
 CONFIG_LIST = [
 
 
-	################################################################################################################
-	####										GDES CONFIGURATIONS												####
-	################################################################################################################
+	# SGD
 
 	Configuration(
 		config_family=P.CONFIG_FAMILY_GDES,
-		config_name='sgd_base', # Train:97.95 Val:87.22, Test:
+		config_name='sgd_base', # Val: 87.28
 		net_class=basemodel.model.Net,
 		batch_size=64,
 		num_epochs=20,
@@ -96,33 +88,25 @@ CONFIG_LIST = [
 		l2_penalty=6e-2,
 	),
 
-	################################################################################################################
-	####					CONFIGS: GDES CLASSIFIER ON FEATURES EXTRACTED FROM HEBB LAYERS						####
-	################################################################################################################
+	# Hebb
 
 	Configuration(
-		config_family=P.CONFIG_FAMILY_GDES,
-		config_name='hebb5_1_gdes20', # Val: 64.76, Test: 63.92
-		net_class=basemodel.fc.Net,
+		config_family=P.CONFIG_FAMILY_HEBB,
+		config_name='hebb_base', # Val: 24.28
+		net_class=hebbmodel.model.Net,
 		batch_size=64,
-		num_epochs=20,
+		num_epochs=5,
 		iteration_ids=[0],
 		val_set_split=50000,
 		augment_data=False,
-		whiten_data=False,
-		learning_rate=1e-3,
-		lr_decay=0.5,
-		milestones=range(10, 20),
-		momentum=0.9,
-		l2_penalty=6e-2,
-		pre_net_class=hebbmodel.model1.Net,
-		pre_net_mdl_path=P.PROJECT_ROOT + '/results/hebb/hebb_base/save/model0.pt',
-		pre_net_out=hebbmodel.model1.Net.BN1
+		whiten_data=True,
 	),
+
+	# Multi
 
 	Configuration(
 		config_family=P.CONFIG_FAMILY_GDES,
-		config_name='hebb1_sgd', # Val: 85.15, Test: 84.93
+		config_name='hebb1_sgd', # Val: 85.15
 		net_class=basemodel.top1.Net,
 		batch_size=64,
 		num_epochs=20,
@@ -135,14 +119,14 @@ CONFIG_LIST = [
 		milestones=range(10, 20),
 		momentum=0.9,
 		l2_penalty=7e-2,
-		pre_net_class=hebbmodel.model1.Net,
+		pre_net_class=hebbmodel.model.Net,
 		pre_net_mdl_path=P.PROJECT_ROOT + '/results/hebb/hebb_base/save/model0.pt',
-		pre_net_out=hebbmodel.model1.Net.BN1
+		pre_net_out=hebbmodel.model.Net.BN1
 	),
 	
 	Configuration(
 		config_family=P.CONFIG_FAMILY_GDES,
-		config_name='hebb2_sgd', # Val: 79.15, Test: 78.61
+		config_name='hebb2_sgd', # Val: 79.15
 		net_class=basemodel.top2.Net,
 		batch_size=64,
 		num_epochs=20,
@@ -162,7 +146,7 @@ CONFIG_LIST = [
 	
 	Configuration(
 		config_family=P.CONFIG_FAMILY_GDES,
-		config_name='hebb3_sgd', # Val: 68.34, Test: 67.87
+		config_name='hebb3_sgd', # Val: 68.34
 		net_class=basemodel.top3.Net,
 		batch_size=64,
 		num_epochs=20,
@@ -182,7 +166,7 @@ CONFIG_LIST = [
 	
 	Configuration(
 		config_family=P.CONFIG_FAMILY_GDES,
-		config_name='hebb4_sgd', # Val: 57.77, Test: 57.56
+		config_name='hebb4_sgd', # Val: 57.77
 		net_class=basemodel.top4.Net,
 		batch_size=64,
 		num_epochs=20,
@@ -200,20 +184,24 @@ CONFIG_LIST = [
 		pre_net_out=hebbmodel.model.Net.BN4
 	),
 
-	################################################################################################################
-	####										HEBB CONFIGURATIONS												####
-	################################################################################################################
-
 	Configuration(
-		config_family=P.CONFIG_FAMILY_HEBB,
-		config_name='hebb_base', # Val: 27.52, Test: 28.59
-		net_class=hebbmodel.model.Net,
+		config_family=P.CONFIG_FAMILY_GDES,
+		config_name='fc_on_hebb_fc5', # Val: 41.49
+		net_class=basemodel.fc.Net,
 		batch_size=64,
-		num_epochs=5,
+		num_epochs=20,
 		iteration_ids=[0],
-		val_set_split=50000,
+		val_set_split=40000,
 		augment_data=False,
 		whiten_data=True,
+		learning_rate=1e-3,
+		lr_decay=0.5,
+		milestones=range(10, 20),
+		momentum=0.9,
+		l2_penalty=5e-4,
+		pre_net_class=hebbmodel.model.Net,
+		pre_net_mdl_path=P.PROJECT_ROOT + '/results/hebb/hebb_base/save/model0.pt',
+		pre_net_out=hebbmodel.model.Net.BN5
 	),
 ]
 
