@@ -18,8 +18,8 @@ class Configuration:
 				 num_epochs,
 				 iteration_ids,
 				 val_set_split,
-				 augment_data,
-				 whiten_data,
+				 augment_data=False,
+				 whiten_data=False,
 				 learning_rate=None,
 				 lr_decay=None,
 				 milestones=None,
@@ -77,20 +77,18 @@ CONFIG_LIST = [
 	# SDM5013
 
 	Configuration(
-		config_family=P.CONFIG_FAMILY_GDES,
+		config_family=P.CONFIG_FAMILY_SDM,
 		config_name='sgd_base',
 		net_class=basemodel.model.Net,
 		batch_size=64,
-		num_epochs=20,
+		num_epochs=30,
 		iteration_ids=[0],
 		val_set_split=50000,
-		augment_data=False,
-		whiten_data=False,
 		learning_rate=1e-3,
-		lr_decay=0.5,
-		milestones=range(10, 20),
+		lr_decay=0.95,
+		milestones=range(15, 30),
 		momentum=0.9,
-		l2_penalty=6e-2,
+		l2_penalty=3e-2,
 	),
 
 

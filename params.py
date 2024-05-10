@@ -20,6 +20,6 @@ NUM_CLASSES = 10
 # Experiment configuration parameters
 CONFIG_FAMILY_HEBB = 'hebb' # Key to identify configurations based on hebbian learning
 CONFIG_FAMILY_GDES = 'gdes' # Key to identify configurations based on gradient descent learning
-CONFIG_FAMILY_GDES = '5013' # Key to identify configurations based on SDM5013
+CONFIG_FAMILY_SDM = '5013' # Key to identify configurations based on SDM5013
 DEFAULT_CONFIG = 'gdes/config_base'
 
